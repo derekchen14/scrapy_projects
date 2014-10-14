@@ -1,6 +1,8 @@
 
 href = response.css('h2.et_pt_title').xpath('./a/@href').extract()
-text = response.css('h2.et_pt_title').xpath('./a/text()').extract()
+text = response.css('h2.domain-header').xpath('./a/text()').extract()
+
+foo = response.xpath('//h2[@class="domain-header"]/a/text()').extract()
 
   s = text.split('-') #\u2013
 
@@ -14,6 +16,8 @@ text = response.css('h2.et_pt_title').xpath('./a/text()').extract()
   artist = s[1]
   notes = s[2]
   link = href
+
+response.xpath('//a[@class="subject-link"]/text()')
 
 a = response.css('p.et_pt_blogmeta').xpath('./a[contains(@rel, "author")]/text()')
 d = response.css('p.et_pt_blogmeta').xpath('./text()').re('[A-Z][a-z]{2}[\s].+')

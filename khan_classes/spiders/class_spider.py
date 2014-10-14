@@ -1,8 +1,10 @@
 import scrapy
-from edm_songs.items import EdmSongsItem
+from khan_classes.items import KhanClassesItem
 from scrapy.contrib.spiders import CrawlSpider, Rule
-# from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.contrib.linkextractors import LinkExtractor
+
+# response.css('h2.domain-header').xpath('./a/text()').extract()
+# response.xpath('//a[@class="subject-link"]/text()')
 
 class SongSpider(CrawlSpider):
   name = "song"
@@ -12,7 +14,6 @@ class SongSpider(CrawlSpider):
     "http://www.edmsauce.com/best-of/best-edm-songs-of-2014/",
     # "http://www.edmsauce.com/best-of/best-edm-songs-of-2014/page/9",
   ]
-  download_delay = 2
   rules = (Rule(LinkExtractor(allow=(r'/best-of/best-edm'),restrict_xpaths=('//a[@class="nextpostslink"]')), callback="parse_songs", follow=True),)
 
   def parse_start_url(self, response):
