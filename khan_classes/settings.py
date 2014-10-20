@@ -13,5 +13,8 @@ BOT_NAME = 'khan_classes'
 SPIDER_MODULES = ['khan_classes.spiders']
 NEWSPIDER_MODULE = 'khan_classes.spiders'
 
+ITEM_PIPELINES = {'scrapy.contrib.pipeline.images.ImagesPipeline': 1}
+IMAGES_STORE = '/Users/derekchen/Documents/scrapy_projects/subject_icons'
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'khan_classes (+http://www.yourdomain.com)'
