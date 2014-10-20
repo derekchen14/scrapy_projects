@@ -9,4 +9,6 @@ class KhanClassesItem(scrapy.Item):
     subject = scrapy.Field()
     lesson = scrapy.Field()
     image = scrapy.Field()
+    main_url = scrapy.Field()
+    other_url = scrapy.Field()
     pass

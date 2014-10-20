@@ -1,7 +1,6 @@
 import scrapy
 from edm_songs.items import EdmSongsItem
 from scrapy.contrib.spiders import CrawlSpider, Rule
-# from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.contrib.linkextractors import LinkExtractor
 
 class SongSpider(CrawlSpider):
@@ -10,7 +9,6 @@ class SongSpider(CrawlSpider):
   start_urls = [
     "http://www.edmsauce.com/best-of/best-edm-songs-of-2013/",
     "http://www.edmsauce.com/best-of/best-edm-songs-of-2014/",
-    # "http://www.edmsauce.com/best-of/best-edm-songs-of-2014/page/9",
   ]
   download_delay = 2
   rules = (Rule(LinkExtractor(allow=(r'/best-of/best-edm'),restrict_xpaths=('//a[@class="nextpostslink"]')), callback="parse_songs", follow=True),)

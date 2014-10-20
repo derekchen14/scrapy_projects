@@ -3,30 +3,66 @@ from khan_classes.items import KhanClassesItem
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors import LinkExtractor
 
-# response.css('h2.domain-header').xpath('./a/text()').extract()
-# response.xpath('//a[@class="subject-link"]/text()')
-
-class SongSpider(CrawlSpider):
-  name = "song"
-  allowed_domains = ["www.edmsauce.com"]
+class KlassSpider(CrawlSpider):
+  name = "klass"
+  allowed_domains = ["www.khanacademy.org"]
   start_urls = [
-    "http://www.edmsauce.com/best-of/best-edm-songs-of-2013/",
-    "http://www.edmsauce.com/best-of/best-edm-songs-of-2014/",
-    # "http://www.edmsauce.com/best-of/best-edm-songs-of-2014/page/9",
+    "https://www.khanacademy.org/library",
   ]
-  rules = (Rule(LinkExtractor(allow=(r'/best-of/best-edm'),restrict_xpaths=('//a[@class="nextpostslink"]')), callback="parse_songs", follow=True),)
+  rules = (Rule(LinkExtractor(allow=(r'/math/'),
+    # restrict_xpaths=('//a[@class="subject-link"]')
+    ), callback="parse_start_url", follow=False),)
+
+  # def parse_start_url(self, response):
+  #   self.log("\n\n Starting to crawl ... \n\n")
+
+  #   klass = KhanClassesItem()
+  #   klass['main_url'] = response.url
+  #   request = scrapy.Request("https://www.khanacademy.org/library",
+  #                            callback=self.parse_klasses)
+  #   request.meta['item'] = klass
+  #   return request
 
   def parse_start_url(self, response):
     self.log("\n\n Starting to crawl ... \n\n")
-    return self.parse_songs(response)
+    # subject
+    # link
+    # domain
+    response.css('li.subjects-row-first div').xpath('./table/tr/td/a').extract()
+    response.css('li.subjects-row-first div').xpath('./table/tr/td/a/text()').extract()
+    response.css('li.subjects-row-first div').xpath('./table/tr/td/a/@href').extract()
 
-  def parse_songs(self, response):
-    print ('\n\n Crawling %s \n\n' % response.url[-7:-1])
+    for link in subjectLinks:
+      print "Link from Part 1:", link
+    klass = KhanClassesItem()
+    klass['main_url'] = response.url
+    klass['other_url'] = response.url
+    request = scrapy.Request("https://www.khanacademy.org/library",
+                             callback=self.parse_test)
+    request.meta['item'] = klass
+    yield request
+
+
+  def parse_test(self, response):
+    klass = response.meta['item']
+    klass['other_url'] = response.url
+    print "Here is Part 2", klass
+    return klass
+
+  def parse_later(self, response):
+    domains = response.css('h2.domain-header').xpath('./a/text()').extract()
+    subjects = response.css('li.subjects-row-first div').xpath('./table/tr/td/a/text()').extract()
+    # subjects = response.xpath('//a[@class="subject-link"]')
+    # return self.parse_songs(response)
+
+    print ('\n\n Crawling %s \n\n' % response.url[20:-1])
     href = response.css('h2.et_pt_title').xpath('./a/@href').extract()
     text = response.css('h2.et_pt_title').xpath('./a/text()').extract()
     author = response.css('p.et_pt_blogmeta').xpath('./a[contains(@rel, "author")]/text()').extract()
     date = response.css('p.et_pt_blogmeta').xpath('./text()').re('[A-Z][a-z]{2}[\s].+')
     songs = []
+
+    lesson = response.xpath('//h4[@class="topic-title"]/text()').extract()
 
     for i, word in enumerate(text):
       encodedText = word.encode('utf-8')
